@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${status} + ' - ' + ${titulo}">Ups, lo siento</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="store-body d-flex align-items-center" style="min-height:100vh;">
+<div class="container">
+    <section class="empty-state-card smart-error-card text-center mx-auto" style="max-width:760px;">
+        <img src="/images/errors/oops-robot.svg" alt="Oops" class="error-robot-img">
+        <span class="store-badge mb-3" th:text="${status}">500</span>
+        <h1 class="mb-3" th:text="${titulo}">Ups, lo siento</h1>
+        <p class="muted-copy fs-5" th:text="${mensaje}">No pudimos completar la solicitud.</p>
+        <p class="muted-copy small mb-4">El sistema detectó el problema y evitó mostrar una pantalla genérica.</p>
+        <div class="d-flex justify-content-center gap-2 flex-wrap">
+            <a th:href="${url}" class="btn store-btn-primary" th:text="${accion}">Volver</a>
+            <a href="/" class="btn store-btn-secondary">Inicio</a>
+        </div>
+    </section>
+</div>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

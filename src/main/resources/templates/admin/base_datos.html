@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo de base de datos | NextLevel</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="admin-body">
+<div class="admin-layout">
+    <div th:replace="~{fragments/admin-header :: adminSidebar('base-datos')}"></div>
+    <main class="admin-content">
+        <div class="admin-toolbar">
+            <div>
+                <h1 class="admin-page-title mb-1">Base de datos MongoDB</h1>
+                <p class="admin-muted mb-0">Modelo NoSQL, colecciones principales y carga funcional del proyecto.</p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="/admin/analitica" class="btn store-btn-outline">Panel de indicadores</a>
+                <a href="/admin/productos" class="btn store-btn-primary">Ver productos</a>
+            </div>
+        </div>
+
+        <section class="metrics-grid mb-4">
+            <article class="metric-card primary">
+                <div class="metric-label">Documentos en productos</div>
+                <div class="metric-value" th:text="${totalProductos}">1000</div>
+            </article>
+            <article class="metric-card success">
+                <div class="metric-label">Categorías</div>
+                <div class="metric-value" th:text="${totalCategorias}">5</div>
+            </article>
+            <article class="metric-card warning">
+                <div class="metric-label">Usuarios</div>
+                <div class="metric-value" th:text="${totalUsuarios}">0</div>
+            </article>
+            <article class="metric-card danger">
+                <div class="metric-label">Pedidos</div>
+                <div class="metric-value" th:text="${totalPedidos}">0</div>
+            </article>
+        </section>
+
+        <section class="admin-card database-model-card mb-4">
+            <div class="database-model-copy">
+                <span class="store-badge mb-2">Base de Datos II</span>
+                <h2>Diagrama funcional en MongoDB</h2>
+                <p>
+                    El sistema trabaja con una base de datos NoSQL en MongoDB. La colección principal de catálogo es
+                    <strong>productos</strong>, poblada con <strong>1000 documentos</strong> de la temática NextLevel Store.
+                    También se cargan las colecciones <strong>categorias</strong>, <strong>usuarios</strong> y <strong>pedidos</strong>.
+                </p>
+                <p>
+                    En MongoDB no hablamos de filas tradicionales, sino de documentos dentro de colecciones. Por eso,
+                    para la sustentación se presenta como una colección <strong>productos</strong> con 1000 registros/documentos.
+                </p>
+            </div>
+            <div class="database-model-image-wrap">
+                <img src="/images/database/diagrama-mongodb-nextlevel.png" alt="Diagrama de base de datos MongoDB NextLevel" class="database-model-image">
+            </div>
+        </section>
+
+        <section class="admin-grid-two">
+            <article class="admin-card">
+                <h2 class="h4 mb-3">Colecciones principales</h2>
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                        <tr><th>Colección</th><th>Función dentro del sistema</th></tr>
+                        </thead>
+                        <tbody>
+                        <tr><td>usuarios</td><td>Registra clientes, administradores, roles, bloqueo y métodos de pago simulados.</td></tr>
+                        <tr><td>categorias</td><td>Clasifica el catálogo en Gamer, Anime, Superhéroes, Coleccionables y Ropa.</td></tr>
+                        <tr><td>productos</td><td>Almacena los 1000 documentos del catálogo con precio, stock, imagen y estado activo.</td></tr>
+                        <tr><td>pedidos</td><td>Guarda las compras realizadas, sus productos, total, estado de pago y seguimiento.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+
+            <article class="admin-card">
+                <h2 class="h4 mb-3">Métodos MongoDB aplicados</h2>
+                <ul class="database-method-list">
+                    <li><strong>findAll()</strong>: listar productos, pedidos y categorías.</li>
+                    <li><strong>findById()</strong>: consultar productos para detalle, edición y compra.</li>
+                    <li><strong>save()</strong>: crear o actualizar usuarios, productos y pedidos.</li>
+                    <li><strong>deleteById()</strong>: eliminar productos desde administración.</li>
+                    <li><strong>existsByCorreoIgnoreCase()</strong>: validar si un correo ya existe antes de registrar.</li>
+                </ul>
+            </article>
+        </section>
+    </main>
+</div>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

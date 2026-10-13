@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="adminSidebar(activeSection)">
+<aside class="admin-sidebar">
+    <div class="admin-brand-wrap">
+        <a href="/admin/dashboard" class="admin-brand">NextLevel Admin</a>
+        <span class="admin-brand-subtitle">Dashboard y control de tienda</span>
+    </div>
+    <nav class="admin-nav">
+        <a th:href="@{/admin/dashboard}" th:classappend="${activeSection == 'dashboard' ? ' active' : ''}">Resumen general</a>
+        <a th:href="@{/admin/productos}" th:classappend="${activeSection == 'productos' ? ' active' : ''}">Productos</a>
+        <a th:href="@{/admin/pedidos}" th:classappend="${activeSection == 'pedidos' ? ' active' : ''}">Pedidos</a>
+        <a th:href="@{/admin/reportes/stock}" th:classappend="${activeSection == 'stock' ? ' active' : ''}">Stock bajo</a>
+        <a th:href="@{/admin/base-datos}" th:classappend="${activeSection == 'base-datos' ? ' active' : ''}">Modelo MongoDB</a>
+        <a th:href="@{/admin/analitica}" th:classappend="${activeSection == 'analitica' ? ' active' : ''}">Panel de indicadores</a>
+        <a th:href="@{/admin/prediccion}" th:classappend="${activeSection == 'prediccion' ? ' active' : ''}">🤖 Modelo Predictivo AI</a>
+    </nav>
+    <div class="admin-side-footer">
+        <a href="/catalogo">Ver tienda</a>
+        <a href="/logout">Cerrar sesión</a>
+    </div>
+</aside>
+</th:block>
+</body>
+</html>

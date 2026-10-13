@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: nextlevel-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: nextlevel_db
+    volumes:
+      - mongodb_data:/data/db
+
+  ml-api:
+    build: ./ml-api
+    container_name: nextlevel-ml-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+
+  app:
+    build: .
+    container_name: nextlevel-app
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+      - ml-api
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      PORT: 8080
+      MONGODB_URI: mongodb://mongodb:27017/nextlevel_db
+      ML_SERVICE_URL: http://ml-api:8000/predecir
+      JWT_SECRET: nextlevel-store-docker-secret-key-1234567890-abcd
+      JWT_EXPIRATION_MS: 86400000
+      APP_COOKIE_SECURE: "false"
+      JWT_COOKIE_SAME_SITE: Lax
+      SESSION_COOKIE_SAME_SITE: Lax
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      POWERBI_EMBED_URL: ${POWERBI_EMBED_URL:-https://app.powerbi.com/reportEmbed?reportId=a11881bc-8eea-49a4-8e4f-8500ed3954e2&autoAuth=true&ctid=9d12bf3f-e4f6-47ab-912f-1a2f0fc48aa4}
+
+volumes:
+  mongodb_data:

@@ -1,0 +1,34 @@
+<!DOCTYPE html><html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Formulario producto</title><link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/style.css"></head><body class="admin-body">
+            <div class="admin-layout"><div th:replace="~{fragments/admin-header :: adminSidebar('productos')}">
+
+            </div><main class="admin-content"><div class="admin-toolbar">
+                <div><h1 class="admin-page-title mb-1" th:text="${producto.id != null ? 'Editar producto' : 'Nuevo producto'}">
+
+                </h1><p class="admin-muted mb-0">Mantén la información del catálogo clara y consistente.</p>
+            </div><a href="/admin/productos" class="btn store-btn-outline">Volver a productos</a></div><section class="admin-card">
+                <form action="/admin/productos/guardar" method="post" class="row g-3"><input type="hidden" name="id" th:value="${producto.id}">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Nombre</label>
+                        <input name="nombre" th:value="${producto.nombre}" required>
+                    </div><div class="col-md-6"><label class="form-label fw-semibold">Categoría</label>
+                        <select name="categoriaId" required><option value="">Selecciona una categoría</option>
+                            <option th:each="categoria : ${categorias}" th:value="${categoria.id}" th:selected="${categoria.id == producto.categoriaId}" th:text="${categoria.nombre}">
+
+                            </option></select></div><div class="col-md-6">
+                                <label class="form-label fw-semibold">Precio</label>
+                                <input type="number" step="0.01" min="0" name="precio" th:value="${producto.precio}" required>
+                            </div><div class="col-md-6">
+                                <label class="form-label fw-semibold">Stock</label>
+                                <input type="number" min="0" name="stock" th:value="${producto.stock}" required></div>
+                                <div class="col-12"><label class="form-label fw-semibold">Imagen</label>
+                                    <input name="imagen" th:value="${producto.imagen}" placeholder="Ruta local o URL">
+                                </div><div class="col-12"><label class="form-label fw-semibold">Descripción</label>
+                                    <textarea name="descripcion" rows="5" required th:text="${producto.descripcion}">
+
+                                    </textarea></div><div class="col-12 d-flex gap-2 flex-wrap">
+                                        <button class="btn store-btn-primary">Guardar producto</button>
+                                        <a href="/admin/productos" class="btn store-btn-secondary">Cancelar</a>
+                                    </div></form></section></main></div></body></html>

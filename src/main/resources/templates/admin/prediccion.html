@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Predicción de ventas - NextLevel</title>
+<link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="admin-body">
+
+<div class="admin-layout">
+
+<div th:replace="~{fragments/admin-header :: adminSidebar('prediccion')}"></div>
+
+<main class="admin-content">
+
+<div class="admin-toolbar">
+<div>
+<h1 class="admin-page-title">Predicción de ventas</h1>
+<p class="admin-muted">
+Modelo inteligente conectado con FastAPI y Spring Boot.
+</p>
+</div>
+</div>
+
+
+<div class="card p-4">
+
+<h3>Generar estimación</h3>
+
+<form id="predictionForm" class="row g-3">
+
+<div class="col-md-4">
+<label>Precio</label>
+<input class="form-control" id="precio" value="50000" type="number">
+</div>
+
+<div class="col-md-4">
+<label>Descuento</label>
+<input class="form-control" id="descuento" value="10" type="number">
+</div>
+
+<div class="col-md-4">
+<label>Calificación</label>
+<input class="form-control" id="calificacion" value="4.5" type="number" step="0.1">
+</div>
+
+<div class="col-md-4">
+<label>Stock</label>
+<input class="form-control" id="stock" value="20" type="number">
+</div>
+
+<div class="col-md-4">
+<label>Popularidad franquicia</label>
+<input class="form-control" id="popularidad" value="8" type="number">
+</div>
+
+
+<div class="col-12">
+<button class="btn store-btn-primary" type="submit">
+Generar predicción
+</button>
+</div>
+
+</form>
+
+
+<div id="resultado" class="mt-4"></div>
+
+
+</div>
+
+
+<script>
+
+document.getElementById('predictionForm').addEventListener('submit', async e => {
+
+ e.preventDefault();
+
+
+ const data = {
+
+  precio: Number(document.getElementById('precio').value),
+
+  descuento: Number(document.getElementById('descuento').value),
+
+  calificacion: Number(document.getElementById('calificacion').value),
+
+  stock: Number(document.getElementById('stock').value),
+
+  popularidad_franquicia: Number(document.getElementById('popularidad').value)
+
+ };
+
+
+ const response = await fetch('/api/predictivo/ventas', {
+
+  method:'POST',
+
+  headers:{
+   'Content-Type':'application/json'
+  },
+
+  body:JSON.stringify(data)
+
+ });
+
+
+ const result = await response.json();
+
+document.getElementById('resultado').innerHTML =
+'<div class="alert alert-success">' +
+'<h4>Respuesta del servidor:</h4>' +
+'<pre>' + JSON.stringify(result, null, 2) + '</pre>' +
+'</div>';
+
+ '<div class="alert alert-success">' +
+
+ '<h4>🤖 Predicción generada</h4>' +
+
+ '<h3>Ventas estimadas: ' + result.prediccion_ventas + ' unidades</h3>' +
+
+ '<p><b>Modelo:</b> Random Forest - NextLevel AI</p>' +
+
+ '<p>Predicción generada mediante el servicio FastAPI integrado con Spring Boot.</p>' +
+
+ '</div>';
+
+
+});
+
+
+</script>
+
+
+</main>
+
+</div>
+
+</body>
+</html>

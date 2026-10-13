@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de indicadores - NextLevel</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="admin-body">
+<div class="admin-layout">
+    <div th:replace="~{fragments/admin-header :: adminSidebar('analitica')}"></div>
+    <main class="admin-content">
+        <div class="admin-toolbar analytics-toolbar">
+            <div>
+                <span class="store-badge">Proyecto NextLevel Store</span>
+                <h1 class="admin-page-title mb-1">Panel de indicadores</h1>
+                <p class="admin-muted mb-0">Visualización general de ingresos, ventas, categorías, ciudades y clientes del sistema.</p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="/admin/dashboard" class="btn store-btn-outline">Volver al dashboard</a>
+                <a href="/catalogo" class="btn store-btn-primary">Ver tienda</a>
+            </div>
+        </div>
+
+        <section class="analytics-hero-card mb-4">
+            <div class="analytics-hero-copy">
+                <span class="analytics-eyebrow">Reporte de gestión</span>
+                <h2>Tablero de visualización del proyecto</h2>
+                <p>Este módulo muestra el análisis realizado sobre la base de datos del proyecto, integrando métricas de ventas, comportamiento por categoría, ubicación y ranking de clientes.</p>
+                <div class="analytics-summary-grid">
+                    <article>
+                        <strong>1000+</strong>
+                        <span>registros analizados</span>
+                    </article>
+                    <article>
+                        <strong>5</strong>
+                        <span>categorías evaluadas</span>
+                    </article>
+                    <article>
+                        <strong>4</strong>
+                        <span>ciudades comparadas</span>
+                    </article>
+                </div>
+            </div>
+            <div class="analytics-preview-wrap">
+                <img src="/images/store/panel-visualizacion-nextlevel.png" alt="Panel de visualización NextLevel" class="analytics-preview-img">
+            </div>
+        </section>
+
+        <section class="analytics-report-shell" th:if="${powerBiEmbedUrl != null and !#strings.isEmpty(powerBiEmbedUrl)}">
+            <div class="analytics-report-head">
+                <div>
+                    <h2>Vista interactiva</h2>
+                    <p th:if="${powerBiPublicEmbed}">Consulta el tablero directamente desde el sistema, sin salir del módulo administrativo.</p>
+                    <p th:if="${powerBiNeedsLogin}">Consulta el tablero directamente desde el sistema sin salir del módulo administrativo.</p>
+                    <p th:if="${!powerBiPublicEmbed and !powerBiNeedsLogin}">Consulta el reporte directamente desde el sistema sin salir del módulo administrativo.</p>
+                </div>
+                <span class="analytics-live-badge">En línea</span>
+            </div>
+            <div class="analytics-frame-mask">
+                <iframe th:src="${powerBiEmbedUrl}" title="Panel de indicadores NextLevel" allowfullscreen="true"></iframe>
+            </div>
+        </section>
+
+        <section class="analytics-report-shell" th:if="${powerBiEmbedUrl == null or #strings.isEmpty(powerBiEmbedUrl)}">
+            <div class="analytics-report-head">
+                <div>
+                    <h2>Vista previa del tablero</h2>
+                    <p>El tablero principal ya está preparado. Cuando el servicio esté en línea, la vista interactiva aparecerá directamente en este módulo.</p>
+                </div>
+                <span class="analytics-live-badge muted">Pendiente</span>
+            </div>
+            <img src="/images/store/panel-visualizacion-nextlevel.png" alt="Vista previa del panel de indicadores" class="analytics-full-preview">
+        </section>
+    </main>
+</div>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

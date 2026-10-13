@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi carrito</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="store-body">
+<div th:replace="~{fragments/store-header :: storeHeader}"></div>
+<main class="store-main">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+            <div>
+                <h1 class="store-section-impact mb-1">Mi carrito</h1>
+                <p class="section-subtitle mb-0">Revisa cantidades y resumen antes de continuar.</p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="/catalogo" class="btn store-btn-outline">Seguir comprando</a>
+                <a href="/carrito/limpiar" class="btn store-btn-secondary" th:if="${!#lists.isEmpty(carrito)}">Vaciar carrito</a>
+            </div>
+        </div>
+        <div th:if="${mensaje}" class="alert-soft alert-success mb-4" th:text="${mensaje}"></div>
+        <div th:if="${errorCarrito}" class="alert-soft alert-danger mb-4" th:text="${errorCarrito}"></div>
+        <section th:if="${#lists.isEmpty(carrito)}" class="empty-state-card text-center">
+            <h2>Tu carrito está vacío</h2>
+            <p class="muted-copy">Todavía no has agregado productos.</p>
+            <a href="/catalogo" class="btn store-btn-primary mt-2">Ir al catálogo</a>
+        </section>
+        <section th:if="${!#lists.isEmpty(carrito)}" class="cart-layout">
+            <div class="cart-list">
+                <article class="cart-product-card" th:each="item : ${carrito}">
+                    <div class="cart-product-media"><img th:src="${item.imagen}" th:alt="${item.nombre}"></div>
+                    <div>
+                        <span class="store-badge" th:text="${item.categoriaNombre}"></span>
+                        <h3 class="cart-product-title mt-2" th:text="${item.nombre}"></h3>
+                        <p class="cart-preview-meta mb-0">Precio unitario: <strong th:text="${'$ ' + item.precio}"></strong></p>
+                        <div class="cart-inline-actions mt-3">
+                            <form th:action="@{'/carrito/actualizar/' + ${item.productoId}}" method="post">
+                                <input type="hidden" name="cantidad" th:value="${item.cantidad - 1}">
+                                <button class="btn store-btn-secondary px-3 py-2">-</button>
+                            </form>
+                            <span class="fw-bold text-white" th:text="${item.cantidad + ' und.'}"></span>
+                            <form th:action="@{'/carrito/actualizar/' + ${item.productoId}}" method="post">
+                                <input type="hidden" name="cantidad" th:value="${item.cantidad + 1}">
+                                <button class="btn store-btn-secondary px-3 py-2">+</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="cart-actions">
+                        <strong class="price-main" th:text="${'$ ' + item.subtotal}"></strong>
+                        <a th:href="@{'/carrito/eliminar/' + ${item.productoId}}" class="btn store-btn-outline">Eliminar</a>
+                    </div>
+                </article>
+            </div>
+            <aside class="summary-card">
+                <h2 class="mb-3 text-white">Resumen de la compra</h2>
+                <div class="summary-row"><span>Subtotal</span><strong th:text="${'$ ' + total}"></strong></div>
+                <div class="summary-row"><span>Envío estimado</span><span th:text="${'$ ' + envioEstimado}"></span></div>
+                <div class="summary-total-row"><span>Total</span><strong class="summary-total" th:text="${'$ ' + totalVisual}"></strong></div>
+                <div class="summary-box-note mt-3">Puedes seguir comprando o continuar al pago cuando quieras.</div>
+                <a href="/pedido/detalle" class="btn store-btn-primary w-100 mt-3">Continuar compra</a>
+                <a href="/catalogo" class="btn store-btn-secondary w-100 mt-2">Seguir comprando</a>
+            </aside>
+        </section>
+    </div>
+</main>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

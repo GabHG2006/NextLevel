@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="store-body">
+<div th:replace="~{fragments/store-header :: storeHeader}"></div>
+<main class="store-main">
+    <div class="container">
+        <div class="checkout-steps">
+            <div class="checkout-step active"><span class="step-circle">1</span><span>Carrito</span></div>
+            <span class="checkout-step-line"></span>
+            <div class="checkout-step active"><span class="step-circle">2</span><span>Datos</span></div>
+            <span class="checkout-step-line"></span>
+            <div class="checkout-step" th:classappend="${!requiereLoginPago ? ' active' : ''}"><span class="step-circle">3</span><span>Pago</span></div>
+        </div>
+        <div th:if="${errorPedido}" class="alert-soft alert-danger mb-4" th:text="${errorPedido}"></div>
+        <div th:if="${mensajePedido}" class="alert-soft alert-success mb-4" th:text="${mensajePedido}"></div>
+        <section class="checkout-layout">
+            <form class="checkout-card" method="post" th:object="${checkoutDraft}" th:action="${requiereLoginPago ? '/pedido/continuar' : '/pedido/realizar'}">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                    <div>
+                        <h1 class="mb-1 text-white">Mi pedido</h1>
+                        <p class="section-subtitle mb-0">Completa tus datos, ubicación y entrega para calcular el total real.</p>
+                    </div>
+                    <a href="/carrito" class="btn store-btn-outline">Volver al carrito</a>
+                </div>
+                <div class="row g-3">
+                    <div class="col-12"><label class="form-label fw-semibold">Correo</label><input type="email" th:field="*{correo}" placeholder="Ej: nombre@mail.com" required></div>
+                    <div class="col-md-6"><label class="form-label fw-semibold">Nombre</label><input th:field="*{nombre}" placeholder="Ingresa tu nombre" required></div>
+                    <div class="col-md-6"><label class="form-label fw-semibold">Apellidos</label><input th:field="*{apellido}" placeholder="Ingresa tu apellido" required></div>
+                    <div class="col-md-6"><label class="form-label fw-semibold">Documento</label><input th:field="*{documento}" placeholder="Ej: 1020782291"></div>
+                    <div class="col-md-6"><label class="form-label fw-semibold">Celular</label><input th:field="*{celular}" placeholder="Ingresa sólo números" required></div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Ciudad</label>
+                        <select id="checkoutCiudad" th:field="*{ciudad}" th:attr="data-current-city=${checkoutDraft.ciudad}" required>
+                            <option value="">Selecciona una ciudad</option>
+                            <option value="Bogotá" data-departamento="Cundinamarca">Bogotá</option>
+                            <option value="Soacha" data-departamento="Cundinamarca">Soacha</option>
+                            <option value="Chía" data-departamento="Cundinamarca">Chía</option>
+                            <option value="Medellín" data-departamento="Antioquia">Medellín</option>
+                            <option value="Bello" data-departamento="Antioquia">Bello</option>
+                            <option value="Envigado" data-departamento="Antioquia">Envigado</option>
+                            <option value="Cali" data-departamento="Valle del Cauca">Cali</option>
+                            <option value="Palmira" data-departamento="Valle del Cauca">Palmira</option>
+                            <option value="Buenaventura" data-departamento="Valle del Cauca">Buenaventura</option>
+                            <option value="Barranquilla" data-departamento="Atlántico">Barranquilla</option>
+                            <option value="Soledad" data-departamento="Atlántico">Soledad</option>
+                            <option value="Puerto Colombia" data-departamento="Atlántico">Puerto Colombia</option>
+                            <option value="Cartagena de Indias" data-departamento="Bolívar">Cartagena de Indias</option>
+                            <option value="Turbaco" data-departamento="Bolívar">Turbaco</option>
+                            <option value="Magangué" data-departamento="Bolívar">Magangué</option>
+                            <option value="Santa Marta" data-departamento="Magdalena">Santa Marta</option>
+                            <option value="Ciénaga" data-departamento="Magdalena">Ciénaga</option>
+                            <option value="Bucaramanga" data-departamento="Santander">Bucaramanga</option>
+                            <option value="Floridablanca" data-departamento="Santander">Floridablanca</option>
+                            <option value="Cúcuta" data-departamento="Norte de Santander">Cúcuta</option>
+                            <option value="Villa del Rosario" data-departamento="Norte de Santander">Villa del Rosario</option>
+                            <option value="Riohacha" data-departamento="La Guajira">Riohacha</option>
+                            <option value="Uribia" data-departamento="La Guajira">Uribia</option>
+                            <option value="Maicao" data-departamento="La Guajira">Maicao</option>
+                            <option value="Valledupar" data-departamento="Cesar">Valledupar</option>
+                            <option value="Aguachica" data-departamento="Cesar">Aguachica</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Departamento</label>
+                        <select id="checkoutDepartamento" th:field="*{departamento}" required>
+                            <option value="">Selecciona un departamento</option>
+                            <option value="Antioquia">Antioquia</option>
+                            <option value="Atlántico">Atlántico</option>
+                            <option value="Bolívar">Bolívar</option>
+                            <option value="Cesar">Cesar</option>
+                            <option value="Cundinamarca">Cundinamarca</option>
+                            <option value="La Guajira">La Guajira</option>
+                            <option value="Magdalena">Magdalena</option>
+                            <option value="Norte de Santander">Norte de Santander</option>
+                            <option value="Santander">Santander</option>
+                            <option value="Valle del Cauca">Valle del Cauca</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4"><label class="form-label fw-semibold">Dirección</label><input th:field="*{direccion}" placeholder="Dirección de entrega"><div class="mt-2 checkout-help-text">Si recoges en tienda, puede quedar vacía.</div></div>
+                </div>
+                <hr class="my-4 text-white-50">
+                <h2 class="mb-3 text-white">Entrega</h2>
+                <div class="checkout-radio-grid mb-3">
+                    <label class="checkout-radio-card"><input type="radio" th:field="*{tipoEntrega}" value="DOMICILIO"><span><strong>Recibir en domicilio</strong><small class="d-block muted-copy">Se suma el costo de envío al total.</small></span></label>
+                    <label class="checkout-radio-card"><input type="radio" th:field="*{tipoEntrega}" value="RETIRO"><span><strong>Recoger en tienda</strong><small class="d-block muted-copy">El envío queda en $ 0 y no se cobra domicilio.</small></span></label>
+                </div>
+                <hr class="my-4 text-white-50">
+                <div th:if="${!requiereLoginPago}">
+                    <h2 class="mb-3 text-white">Pago</h2>
+                    <div th:if="${#lists.isEmpty(metodosPago)}" class="alert-soft alert-danger mb-3">No tienes métodos de pago guardados todavía. <div class="mt-3"><a href="/perfil/pagos" class="btn store-btn-primary">Registrar método de pago</a></div></div>
+                    <div th:if="${!#lists.isEmpty(metodosPago)}" class="checkout-radio-grid mb-3">
+                        <label class="payment-option-card" th:each="metodo : ${metodosPago}">
+                            <input type="radio" name="metodoPagoId" th:value="${metodo.id}" required>
+                            <span>
+                                <p class="cart-preview-name" th:text="${metodo.tipo + ' - ' + metodo.entidad}"></p>
+                                <p class="cart-preview-meta" th:text="${'Titular: ' + metodo.titular}"></p>
+                                <small th:text="${'Saldo disponible: $ ' + #numbers.formatDecimal(metodo.saldoDisponible, 0, 'POINT', 0, 'COMMA')}"></small>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="summary-box-note mt-2">Al finalizar, se descuenta del método de pago el total calculado: productos + envío si aplica.</div>
+                </div>
+                <div class="checkout-checkboxes mt-4 mb-4">
+                    <label><input type="checkbox" th:field="*{aceptaTerminos}"><span>Acepto términos y condiciones.</span></label>
+                    <label><input type="checkbox" th:field="*{aceptaPrivacidad}"><span>Acepto políticas de privacidad y tratamiento de datos personales.</span></label>
+                </div>
+                <button class="btn store-btn-primary w-100" th:text="${requiereLoginPago ? 'Continuar al login para pagar' : 'Finalizar compra'}" th:disabled="${!requiereLoginPago and #lists.isEmpty(metodosPago)}"></button>
+            </form>
+            <aside class="summary-card" th:attr="data-subtotal=${total},data-envio=${envioEstimado}">
+                <h2 class="mb-3 text-white">Resumen de la compra</h2>
+                <div class="summary-product-list mb-4">
+                    <article class="summary-product" th:each="item : ${carrito}">
+                        <img th:src="${item.imagen}" th:alt="${item.nombre}">
+                        <div>
+                            <h3 class="order-title" th:text="${item.nombre}"></h3>
+                            <p class="cart-preview-meta" th:text="${item.cantidad + ' unidad(es)'}"></p>
+                            <small class="text-muted" th:text="${item.categoriaNombre}"></small>
+                        </div>
+                        <strong th:text="${'$ ' + #numbers.formatDecimal(item.subtotal, 0, 'POINT', 0, 'COMMA')}"></strong>
+                    </article>
+                </div>
+                <div class="summary-row"><span>Subtotal</span><strong id="subtotalLabel" th:text="${'$ ' + #numbers.formatDecimal(total, 0, 'POINT', 0, 'COMMA')}"></strong></div>
+                <div class="summary-row"><span>Envío estimado</span><span id="envioLabel" th:text="${'$ ' + #numbers.formatDecimal(envioEstimado, 0, 'POINT', 0, 'COMMA')}"></span></div>
+                <div class="summary-total-row"><span>Total a descontar</span><strong id="totalCheckoutLabel" class="summary-total" th:text="${'$ ' + #numbers.formatDecimal(totalVisual, 0, 'POINT', 0, 'COMMA')}"></strong></div>
+                <p class="summary-box-note mt-3 mb-0">Este total es el valor que se descuenta del saldo disponible del método de pago seleccionado.</p>
+            </aside>
+        </section>
+    </div>
+</main>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script>
+(function () {
+    const summary = document.querySelector('.summary-card[data-subtotal]');
+    if (!summary) return;
+    const subtotal = Number(summary.dataset.subtotal || 0);
+    const envio = Number(summary.dataset.envio || 0);
+    const envioLabel = document.getElementById('envioLabel');
+    const totalLabel = document.getElementById('totalCheckoutLabel');
+    const formatter = new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 });
+
+    function syncColombiaLocationSelects(departmentId, cityId) {
+        const departmentSelect = document.getElementById(departmentId);
+        const citySelect = document.getElementById(cityId);
+        if (!departmentSelect || !citySelect) return;
+
+        const initialCity = citySelect.dataset.currentCity || citySelect.value;
+
+        function refreshCityOptions(keepCurrent) {
+            const department = departmentSelect.value;
+            let firstAvailable = '';
+            let currentStillAvailable = false;
+
+            Array.from(citySelect.options).forEach(option => {
+                if (!option.value) {
+                    option.hidden = false;
+                    option.disabled = false;
+                    return;
+                }
+                const matchesDepartment = !department || option.dataset.departamento === department;
+                option.hidden = !matchesDepartment;
+                option.disabled = !matchesDepartment;
+                if (matchesDepartment && !firstAvailable) firstAvailable = option.value;
+                if (matchesDepartment && option.value === citySelect.value) currentStillAvailable = true;
+            });
+
+            if (!currentStillAvailable) {
+                const initialOption = Array.from(citySelect.options)
+                    .find(option => option.value === initialCity && !option.disabled);
+                citySelect.value = keepCurrent && initialOption ? initialCity : firstAvailable;
+            }
+        }
+
+        departmentSelect.addEventListener('change', () => refreshCityOptions(false));
+        refreshCityOptions(true);
+    }
+
+    syncColombiaLocationSelects('checkoutDepartamento', 'checkoutCiudad');
+
+    function refreshTotal() {
+        const tipo = document.querySelector('input[name="tipoEntrega"]:checked');
+        const envioFinal = tipo && tipo.value === 'RETIRO' ? 0 : envio;
+        if (envioLabel) envioLabel.textContent = '$ ' + formatter.format(envioFinal);
+        if (totalLabel) totalLabel.textContent = '$ ' + formatter.format(subtotal + envioFinal);
+    }
+    document.querySelectorAll('input[name="tipoEntrega"]').forEach(input => input.addEventListener('change', refreshTotal));
+    refreshTotal();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+[
+  {
+    "id": "1",
+    "nombre": "Gamer",
+    "descripcion": "Articulos gamer"
+  },
+  {
+    "id": "2",
+    "nombre": "Anime",
+    "descripcion": "Figuras y ropa anime"
+  },
+  {
+    "id": "3",
+    "nombre": "Superheroes",
+    "descripcion": "Marvel, DC y otros"
+  },
+  {
+    "id": "4",
+    "nombre": "Coleccionables",
+    "descripcion": "Objetos de coleccion"
+  },
+  {
+    "id": "5",
+    "nombre": "Ropa",
+    "descripcion": "Buzos y camisetas frikis"
+  }
+]

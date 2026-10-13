@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido confirmado</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="store-body">
+<div th:replace="~{fragments/store-header :: storeHeader}"></div>
+<main class="store-main">
+    <div class="container">
+        <div class="order-layout">
+            <section class="order-card text-center">
+                <span class="badge-soft success mb-3">Pago aprobado</span>
+                <h1 class="mb-3">¡Tu compra fue confirmada!</h1>
+                <p class="section-subtitle">El pedido quedó registrado, el stock se descontó y el saldo del método de pago fue actualizado.</p>
+                <div class="store-info-grid mt-4">
+                    <article class="store-info-box"><h3>Pedido</h3><p class="mb-0" th:text="${pedido.id}"></p></article>
+                    <article class="store-info-box"><h3>Total descontado</h3><p class="mb-0" th:text="${'$ ' + #numbers.formatDecimal(pedido.total, 0, 'POINT', 0, 'COMMA')}"></p></article>
+                    <article class="store-info-box"><h3>Entrega</h3><p class="mb-0" th:text="${entregaSeleccionada == 'RETIRO' ? 'Recoger en tienda' : 'Despacho a domicilio'}"></p></article>
+                </div>
+                <div class="d-flex justify-content-center gap-2 flex-wrap mt-4"><a href="/pedido/mis-pedidos" class="btn store-btn-primary">Ver mis pedidos</a><a href="/catalogo" class="btn store-btn-secondary">Volver a la tienda</a></div>
+            </section>
+            <aside class="summary-card">
+                <h2 class="mb-3">Detalle final</h2>
+                <div class="summary-row"><span>Cliente</span><strong th:text="${pedido.nombreCliente}"></strong></div>
+                <div class="summary-row"><span>Correo</span><span th:text="${pedido.correoCliente}"></span></div>
+                <div class="summary-row"><span>Referencia pago</span><span th:text="${pedido.referenciaPago}"></span></div>
+                <div class="summary-row"><span>Dirección</span><span th:text="${pedido.direccionEnvio}"></span></div>
+                <div class="summary-row" th:if="${pedido.departamentoEnvio != null}"><span>Departamento</span><span th:text="${pedido.departamentoEnvio}"></span></div>
+                <div class="summary-row"><span>Subtotal productos</span><strong th:text="${'$ ' + #numbers.formatDecimal(pedido.subtotalProductos != null ? pedido.subtotalProductos : pedido.total, 0, 'POINT', 0, 'COMMA')}"></strong></div>
+                <div class="summary-row"><span>Envío</span><span th:text="${'$ ' + #numbers.formatDecimal(pedido.costoEnvio != null ? pedido.costoEnvio : 0, 0, 'POINT', 0, 'COMMA')}"></span></div>
+                <div class="summary-total-row"><span>Total descontado</span><strong class="summary-total" th:text="${'$ ' + #numbers.formatDecimal(pedido.total, 0, 'POINT', 0, 'COMMA')}"></strong></div>
+            </aside>
+        </div>
+    </div>
+</main>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

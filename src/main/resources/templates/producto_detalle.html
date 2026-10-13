@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${producto.nombre} + ' - NextLevel'">Producto</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="store-body">
+<div th:replace="~{fragments/store-header :: storeHeader}"></div>
+<main class="store-main">
+    <div class="container">
+        <nav class="breadcrumb-soft">
+            <a href="/catalogo">Inicio</a><span>›</span>
+            <a th:href="@{/catalogo(categoriaId=${producto.categoriaId})}" th:text="${producto.categoriaNombre}"></a><span>›</span>
+            <span th:text="${producto.nombre}"></span>
+        </nav>
+        <div th:if="${mensaje}" class="alert-soft alert-success mb-4" th:text="${mensaje}"></div>
+        <div th:if="${errorCarrito}" class="alert-soft alert-danger mb-4" th:text="${errorCarrito}"></div>
+        <div class="row g-4 align-items-start">
+            <div class="col-lg-7">
+                <section class="product-media-card h-100"><img th:src="${producto.imagen}" th:alt="${producto.nombre}" class="product-detail-image"></section>
+            </div>
+            <div class="col-lg-5">
+                <section class="detail-panel h-100">
+                    <span class="store-badge mb-3" th:text="${producto.categoriaNombre}"></span>
+                    <h1 class="detail-title" th:text="${producto.nombre}"></h1>
+                    <p class="muted-copy mb-2" th:text="${producto.descripcion}"></p>
+                    <span class="detail-price" th:text="${'$ ' + producto.precio}"></span>
+                    <div class="detail-meta-grid mt-4">
+                        <article class="detail-meta-item">
+                            <strong>Disponibilidad</strong>
+                            <p class="mb-0 muted-copy" th:text="${producto.stock > 0 ? 'Disponible' : 'Producto agotado'}"></p>
+                        </article>
+                        <article class="detail-meta-item">
+                            <strong>Stock</strong>
+                            <p class="mb-0 muted-copy" th:text="${producto.stock + ' unidades'}"></p>
+                        </article>
+                    </div>
+                    <form th:if="${producto.stock > 0}" th:action="@{'/carrito/agregar/' + ${producto.id}}" method="post" class="mt-4">
+                        <div class="detail-actions">
+                            <div class="quantity-control">
+                                <button type="button" onclick="this.nextElementSibling.stepDown()">-</button>
+                                <input type="number" name="cantidad" value="1" min="1" th:attr="max=${producto.stock}">
+                                <button type="button" onclick="this.previousElementSibling.stepUp()">+</button>
+                            </div>
+                            <button class="btn store-btn-primary flex-grow-1">Agregar al carrito</button>
+                        </div>
+                    </form>
+                    <div th:if="${producto.stock <= 0}" class="alert-soft alert-danger mt-4">Este producto no tiene stock disponible por ahora.</div>
+                    <div class="summary-box-note mt-4">Revisa la cantidad, agrega al carrito y continúa con tu compra cuando quieras.</div>
+                </section>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

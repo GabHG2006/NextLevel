@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<th:block th:fragment="storeHeader">
+<header class="store-header shadow-sm">
+    <div class="store-topbar">
+        <div class="container store-topbar-inner">
+            <div class="header-location-row">
+                <button class="store-location-trigger" type="button" data-bs-toggle="modal" data-bs-target="#locationModal">
+                    📍 <span th:text="${tiendaUbicacion}">Agregar ubicación</span>
+                </button>
+            </div>
+            <div class="store-top-links">
+                <a href="/catalogo">Catálogo</a>
+                <a sec:authorize="hasRole('CLIENTE') or hasRole('ADMIN')" href="/pedido/mis-pedidos">Mis pedidos</a>
+                <a sec:authorize="hasRole('CLIENTE') or hasRole('ADMIN')" href="/perfil/pagos">Mis pagos</a>
+                <a sec:authorize="hasRole('ADMIN')" href="/admin/dashboard">Dashboard</a>
+                <a sec:authorize="!isAuthenticated()" href="/login">Login</a>
+                <a sec:authorize="!isAuthenticated()" href="/registro">Registro</a>
+                <a sec:authorize="isAuthenticated()" href="/logout">Salir</a>
+                <button class="btn cart-button-header" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartCanvas">
+                    🛒 Mi carrito <span class="cart-pill" th:text="${cartCount}">0</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="store-searchbar">
+        <div class="container store-searchbar-inner">
+            <a class="store-brand" href="/catalogo">
+                <img src="/images/store/logo-nextlevel.png" alt="NextLevel Store">
+            </a>
+            <form method="get" action="/catalogo" class="store-search-form">
+                <input type="text" name="q" th:value="${q}" placeholder="Busca figuras, ropa, consolas o coleccionables">
+                <button type="submit">Buscar</button>
+            </form>
+            <div class="store-quick-links">
+                <a class="quick-link" href="/pedido/detalle">Pagar</a>
+                <a class="quick-link" href="/carrito">Ver carrito</a>
+            </div>
+        </div>
+    </div>
+    <div class="store-categorybar">
+        <div class="container">
+            <div class="category-scroll">
+                <a th:href="@{/catalogo}" th:classappend="${categoriaId == null || #strings.isEmpty(categoriaId) ? ' active' : ''}">Todo</a>
+                <a th:each="categoria : ${storeCategorias}" th:href="@{/catalogo(categoriaId=${categoria.id})}"
+                   th:text="${categoria.nombre}" th:classappend="${categoria.id == categoriaId ? ' active' : ''}"></a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="offcanvas offcanvas-end store-cart-canvas" tabindex="-1" id="cartCanvas">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="mb-0">Mi carrito</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body p-0 d-flex flex-column">
+        <div class="p-3 flex-grow-1">
+            <div th:if="${#lists.isEmpty(cartPreview)}" class="empty-cart-state">
+                <p class="mb-2">Tu carrito está vacío.</p>
+                <small>Agrega productos para ver el resumen rápido.</small>
+            </div>
+            <div class="cart-preview-list" th:if="${!#lists.isEmpty(cartPreview)}">
+                <article class="cart-preview-item" th:each="item : ${cartPreview}">
+                    <img th:src="${item.imagen}" alt="producto">
+                    <div>
+                        <p class="cart-preview-name" th:text="${item.nombre}"></p>
+                        <p class="cart-preview-meta" th:text="${item.cantidad + ' und. · ' + item.categoriaNombre}"></p>
+                        <strong th:text="${'$ ' + item.subtotal}"></strong>
+                    </div>
+                </article>
+            </div>
+        </div>
+        <div class="offcanvas-footer">
+            <div class="cart-summary-row"><span>Subtotal</span><strong th:text="${'$ ' + cartPreviewTotal}"></strong></div>
+            <div class="cart-summary-row"><span>Envío estimado</span><span th:text="${'$ ' + cartPreviewShipping}"></span></div>
+            <a href="/carrito" class="btn store-btn-primary w-100">Ver carrito completo</a>
+            <a href="/pedido/detalle" class="btn store-btn-secondary w-100 mt-2">Finalizar compra</a>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="locationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" action="/ubicacion">
+                <div class="modal-header">
+                    <h5 class="modal-title">Selecciona tu ubicación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="redirect" value="/catalogo">
+                    <div class="mb-3">
+                        <label class="form-label">Departamento</label>
+                        <select id="modalDepartamento" name="departamento">
+                            <option value="">Selecciona un departamento</option>
+                            <option value="Antioquia" th:selected="${tiendaDepartamento == 'Antioquia'}">Antioquia</option>
+                            <option value="Atlántico" th:selected="${tiendaDepartamento == 'Atlántico'}">Atlántico</option>
+                            <option value="Bolívar" th:selected="${tiendaDepartamento == 'Bolívar'}">Bolívar</option>
+                            <option value="Cesar" th:selected="${tiendaDepartamento == 'Cesar'}">Cesar</option>
+                            <option value="Cundinamarca" th:selected="${tiendaDepartamento == 'Cundinamarca'}">Cundinamarca</option>
+                            <option value="La Guajira" th:selected="${tiendaDepartamento == 'La Guajira'}">La Guajira</option>
+                            <option value="Magdalena" th:selected="${tiendaDepartamento == 'Magdalena'}">Magdalena</option>
+                            <option value="Norte de Santander" th:selected="${tiendaDepartamento == 'Norte de Santander'}">Norte de Santander</option>
+                            <option value="Santander" th:selected="${tiendaDepartamento == 'Santander'}">Santander</option>
+                            <option value="Valle del Cauca" th:selected="${tiendaDepartamento == 'Valle del Cauca'}">Valle del Cauca</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Ciudad</label>
+                        <select id="modalCiudad" name="ciudad" th:attr="data-current-city=${tiendaCiudad}">
+                            <option value="">Selecciona una ciudad</option>
+                            <option value="Bogotá" data-departamento="Cundinamarca" th:selected="${tiendaCiudad == 'Bogotá'}">Bogotá</option>
+                            <option value="Soacha" data-departamento="Cundinamarca" th:selected="${tiendaCiudad == 'Soacha'}">Soacha</option>
+                            <option value="Chía" data-departamento="Cundinamarca" th:selected="${tiendaCiudad == 'Chía'}">Chía</option>
+                            <option value="Medellín" data-departamento="Antioquia" th:selected="${tiendaCiudad == 'Medellín'}">Medellín</option>
+                            <option value="Bello" data-departamento="Antioquia" th:selected="${tiendaCiudad == 'Bello'}">Bello</option>
+                            <option value="Envigado" data-departamento="Antioquia" th:selected="${tiendaCiudad == 'Envigado'}">Envigado</option>
+                            <option value="Cali" data-departamento="Valle del Cauca" th:selected="${tiendaCiudad == 'Cali'}">Cali</option>
+                            <option value="Palmira" data-departamento="Valle del Cauca" th:selected="${tiendaCiudad == 'Palmira'}">Palmira</option>
+                            <option value="Buenaventura" data-departamento="Valle del Cauca" th:selected="${tiendaCiudad == 'Buenaventura'}">Buenaventura</option>
+                            <option value="Barranquilla" data-departamento="Atlántico" th:selected="${tiendaCiudad == 'Barranquilla'}">Barranquilla</option>
+                            <option value="Soledad" data-departamento="Atlántico" th:selected="${tiendaCiudad == 'Soledad'}">Soledad</option>
+                            <option value="Puerto Colombia" data-departamento="Atlántico" th:selected="${tiendaCiudad == 'Puerto Colombia'}">Puerto Colombia</option>
+                            <option value="Cartagena de Indias" data-departamento="Bolívar" th:selected="${tiendaCiudad == 'Cartagena de Indias'}">Cartagena de Indias</option>
+                            <option value="Turbaco" data-departamento="Bolívar" th:selected="${tiendaCiudad == 'Turbaco'}">Turbaco</option>
+                            <option value="Magangué" data-departamento="Bolívar" th:selected="${tiendaCiudad == 'Magangué'}">Magangué</option>
+                            <option value="Santa Marta" data-departamento="Magdalena" th:selected="${tiendaCiudad == 'Santa Marta'}">Santa Marta</option>
+                            <option value="Ciénaga" data-departamento="Magdalena" th:selected="${tiendaCiudad == 'Ciénaga'}">Ciénaga</option>
+                            <option value="Bucaramanga" data-departamento="Santander" th:selected="${tiendaCiudad == 'Bucaramanga'}">Bucaramanga</option>
+                            <option value="Floridablanca" data-departamento="Santander" th:selected="${tiendaCiudad == 'Floridablanca'}">Floridablanca</option>
+                            <option value="Cúcuta" data-departamento="Norte de Santander" th:selected="${tiendaCiudad == 'Cúcuta'}">Cúcuta</option>
+                            <option value="Villa del Rosario" data-departamento="Norte de Santander" th:selected="${tiendaCiudad == 'Villa del Rosario'}">Villa del Rosario</option>
+                            <option value="Riohacha" data-departamento="La Guajira" th:selected="${tiendaCiudad == 'Riohacha'}">Riohacha</option>
+                            <option value="Uribia" data-departamento="La Guajira" th:selected="${tiendaCiudad == 'Uribia'}">Uribia</option>
+                            <option value="Maicao" data-departamento="La Guajira" th:selected="${tiendaCiudad == 'Maicao'}">Maicao</option>
+                            <option value="Valledupar" data-departamento="Cesar" th:selected="${tiendaCiudad == 'Valledupar'}">Valledupar</option>
+                            <option value="Aguachica" data-departamento="Cesar" th:selected="${tiendaCiudad == 'Aguachica'}">Aguachica</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn store-btn-outline" data-bs-dismiss="modal">Cancelar</button>
+                    <button class="btn store-btn-primary">Guardar ubicación</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+(function () {
+    const departmentSelect = document.getElementById('modalDepartamento');
+    const citySelect = document.getElementById('modalCiudad');
+    if (!departmentSelect || !citySelect) return;
+
+    const initialCity = citySelect.dataset.currentCity || citySelect.value;
+
+    function refreshModalCities(keepCurrent) {
+        const department = departmentSelect.value;
+        let firstAvailable = '';
+        let currentStillAvailable = false;
+
+        Array.from(citySelect.options).forEach(option => {
+            if (!option.value) {
+                option.hidden = false;
+                option.disabled = false;
+                return;
+            }
+            const matchesDepartment = !department || option.dataset.departamento === department;
+            option.hidden = !matchesDepartment;
+            option.disabled = !matchesDepartment;
+            if (matchesDepartment && !firstAvailable) firstAvailable = option.value;
+            if (matchesDepartment && option.value === citySelect.value) currentStillAvailable = true;
+        });
+
+        if (!currentStillAvailable) {
+            const initialOption = Array.from(citySelect.options)
+                .find(option => option.value === initialCity && !option.disabled);
+            citySelect.value = keepCurrent && initialOption ? initialCity : firstAvailable;
+        }
+    }
+
+    departmentSelect.addEventListener('change', () => refreshModalCities(false));
+    refreshModalCities(true);
+})();
+</script>
+</th:block>
+</body>
+</html>

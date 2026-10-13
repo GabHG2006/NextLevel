@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión - NextLevel</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="store-body">
+<div th:replace="~{fragments/store-header :: storeHeader}"></div>
+<main class="store-main">
+    <div class="container" th:with="redirectValue=${param.redirect != null ? param.redirect[0] : null}">
+        <div class="auth-layout">
+            <section class="auth-card">
+                <span class="store-badge mb-3">Acceso NextLevel</span>
+                <h1 class="mb-2">Inicia sesión en NextLevel</h1>
+                <p class="section-subtitle">Accede a tu cuenta para continuar con el pago y revisar tus pedidos.</p>
+                <div th:if="${param.notfound}" class="alert-soft alert-danger mb-3">Ups, lo siento. Ese correo no está registrado.</div>
+                <div th:if="${param.error}" class="alert-soft alert-danger mb-3">Ups, lo siento. La contraseña no coincide o la sesión expiró.</div>
+                <div th:if="${param.blocked}" class="alert-soft alert-danger mb-3">Ups, lo siento. La cuenta está bloqueada temporalmente por varios intentos fallidos.</div>
+                <div th:if="${param.expired}" class="alert-soft alert-danger mb-3">Tu sesión expiró o ya tienes una sesión activa.</div>
+                <div th:if="${param.oauth_error}" class="alert-soft alert-danger mb-3">No pudimos completar el acceso con Google porque no recibimos un correo válido.</div>
+                <div th:if="${param.registered}" class="alert-soft alert-success mb-3">Usuario registrado correctamente. Ya puedes iniciar sesión.</div>
+                <div th:if="${param.logout}" class="alert-soft alert-success mb-3">Sesión cerrada correctamente.</div>
+                <form method="post" action="/login" class="row g-3">
+                    <input type="hidden" name="redirect" th:if="${redirectValue != null}" th:value="${redirectValue}">
+                    <div class="col-12"><label class="form-label fw-semibold">Correo</label><input type="email" name="correo" placeholder="correo@ejemplo.com" required></div>
+                    <div class="col-12"><label class="form-label fw-semibold">Contraseña</label><input type="password" name="password" placeholder="Tu contraseña" required></div>
+                    <div class="col-12"><button class="btn store-btn-primary w-100">Entrar a NextLevel</button></div>
+                </form>
+                <div class="auth-divider"><span>o</span></div>
+                <a class="btn google-login-btn w-100"
+                   th:href="${redirectValue != null ? '/auth/oauth2/google/login?redirect=' + redirectValue : '/auth/oauth2/google/login'}">Continuar con Google</a>
+                <p class="mt-4 mb-0">¿No tienes cuenta? <a class="quick-inline-link" th:href="${redirectValue != null ? '/registro?redirect=' + redirectValue : '/registro'}">Regístrate aquí</a></p>
+            </section>
+            <aside class="auth-support-card">
+                <span class="badge-soft mb-3">Cuenta NextLevel</span>
+                <h2 class="mb-3">¿Qué puedes hacer con tu cuenta?</h2>
+                <ul class="simple-checklist ps-0 mb-4">
+                    <li>Guardar métodos de pago.</li>
+                    <li>Consultar pedidos realizados.</li>
+                    <li>Continuar el proceso de compra.</li>
+                    <li>Mantener tus datos listos para futuras compras.</li>
+                </ul>
+                <div class="store-info-box bg-transparent border border-light-subtle text-white">
+                    <h3 class="text-white">Credenciales de prueba</h3>
+                    <p class="mb-2">Admin: <strong>admin@nextlevel.com</strong> / <strong>Admin123*</strong></p>
+                    <p class="mb-0">Cliente: <strong>cliente@nextlevel.com</strong> / <strong>Cliente123*</strong></p>
+                </div>
+            </aside>
+        </div>
+    </div>
+</main>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

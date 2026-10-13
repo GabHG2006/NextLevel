@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: nextlevel-store-secure
+    env: docker
+    plan: free
+    autoDeploy: false
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: JWT_SECRET
+        value: nextlevel-store-demo-jwt-secret-change-in-render-2026-very-long-key
+      - key: JWT_EXPIRATION_MS
+        value: 86400000
+      - key: APP_COOKIE_SECURE
+        value: true
+      - key: SESSION_COOKIE_SAME_SITE
+        value: Lax
+      - key: JWT_COOKIE_SAME_SITE
+        value: Lax
+      - key: POWERBI_PUBLIC_EMBED_URL
+        value: https://app.powerbi.com/view?r=eyJrIjoiZjI0Mzk1NGEtYTEyOC00M2JiLWFhYzQtOTc0ZDY3ZjMyZjg5IiwidCI6IjlkMTJiZjNmLWU0ZjYtNDdhYi05MTJmLTFhMmYwZmM0OGFhNCIsImMiOjR9
+      - key: POWERBI_EMBED_URL
+        sync: false
+      - key: MONGODB_URI
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false

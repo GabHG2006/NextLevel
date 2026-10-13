@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo - NextLevel</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="store-body">
+<div th:replace="~{fragments/store-header :: storeHeader}"></div>
+<main class="store-main">
+    <div class="container">
+        <div th:if="${mensaje}" class="alert-soft alert-success mb-4" th:text="${mensaje}"></div>
+        <div th:if="${param.registered}" class="alert-soft alert-success mb-4">Cuenta creada correctamente. Ya estás dentro de NextLevel.</div>
+        <div th:if="${param.oauth != null and param.oauth[0] == 'registered'}" class="alert-soft alert-success mb-4">Cuenta creada con Google correctamente. Ya estás dentro de NextLevel.</div>
+        <div th:if="${param.oauth != null and param.oauth[0] == 'existing'}" class="alert-soft alert-success mb-4">Ese correo de Google ya existía. Ingresaste con la cuenta registrada en NextLevel.</div>
+        <div th:if="${param.oauth != null and param.oauth[0] == 'login'}" class="alert-soft alert-success mb-4">Ingresaste correctamente con Google.</div>
+        <div th:if="${errorCarrito}" class="alert-soft alert-danger mb-4" th:text="${errorCarrito}"></div>
+
+        <section class="banner-card mb-4">
+            <div id="storeCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#storeCarousel" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#storeCarousel" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#storeCarousel" data-bs-slide-to="2"></button>
+                </div>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="/images/store/banner-1.jpg" alt="Colección gamer y friki">
+                        <div class="carousel-overlay"></div>
+                        <div class="carousel-caption-custom">
+                            <div class="banner-caption-box">
+                                <div class="banner-impact">Colecciones que destacan</div>
+                                <p class="mb-0 muted-copy">Figuras, ropa y artículos gamer con estilo propio.</p>
+                            </div>
+                            <div class="banner-actions">
+                                <a href="/catalogo" class="btn store-btn-primary">Ver catálogo</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="/images/store/banner-2.jpg" alt="Ropa temática">
+                        <div class="carousel-overlay"></div>
+                        <div class="carousel-caption-custom">
+                            <div class="banner-caption-box">
+                                <div class="banner-impact">Ropa y accesorios</div>
+                                <p class="mb-0 muted-copy">Prendas con diseño gamer, friki y coleccionable.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="/images/store/banner-3.jpg" alt="NextLevel Store">
+                        <div class="carousel-overlay"></div>
+                        <div class="carousel-caption-custom">
+                            <div class="banner-caption-box">
+                                <div class="banner-impact">NextLevel Store</div>
+                                <p class="mb-0 muted-copy">Un catálogo claro para explorar y comprar sin complicaciones.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#storeCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#storeCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+        </section>
+
+        <section class="store-filter-panel mb-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+                <div>
+                    <h1 class="store-section-impact mb-1" th:text="${(q != null && !#strings.isEmpty(q)) || (categoriaId != null && !#strings.isEmpty(categoriaId)) ? 'Resultados' : 'Novedades del catálogo'}">Productos destacados</h1>
+                    <p class="section-subtitle mb-0" th:text="${(q != null && !#strings.isEmpty(q)) || (categoriaId != null && !#strings.isEmpty(categoriaId)) ? 'Explora las coincidencias encontradas.' : 'Lo más reciente y editado del catálogo aparece primero.'}">Explora el catálogo y agrega desde la ficha del producto.</p>
+                </div>
+                <div class="fw-bold text-white" th:text="${#lists.size(productos)} + ' resultados'"></div>
+            </div>
+            <div class="filter-chip-group">
+                <div class="filter-chip">Búsqueda: <strong th:text="${(q != null && !#strings.isEmpty(q)) ? q : 'Todo el catálogo'}"></strong></div>
+                <div class="filter-chip">Categoría: <strong th:text="${categoriaId != null && !#strings.isEmpty(categoriaId) ? categoriaActualNombre : 'Todas'}"></strong></div>
+            </div>
+        </section>
+
+        <section th:if="${!#lists.isEmpty(productos)}" class="product-grid">
+            <article class="product-card" th:each="p : ${productos}">
+                <div class="product-card-media"><img th:src="${p.imagen}" th:alt="${p.nombre}"></div>
+                <div class="product-card-body">
+                    <span class="store-badge" th:text="${p.categoriaNombre}"></span>
+                    <h3 class="product-title" th:text="${p.nombre}"></h3>
+                    <p class="product-description" th:text="${p.descripcion}"></p>
+                    <span class="price-main" th:text="${'$ ' + p.precio}"></span>
+                    <div class="stock-row">
+                        <span class="stock-pill" th:text="${'Stock: ' + p.stock}"></span>
+                        <span class="badge-soft warning" th:if="${p.stock <= 5}">Pocas unidades</span>
+                    </div>
+                    <a class="btn store-btn-primary w-100 mt-2" th:href="@{'/producto/' + ${p.id}}">Agregar al carrito</a>
+                </div>
+            </article>
+        </section>
+
+        <section th:if="${#lists.isEmpty(productos)}" class="empty-state-card text-center mt-4">
+            <h2>No encontramos productos con ese filtro</h2>
+            <p class="muted-copy">Prueba otra búsqueda o vuelve a ver todas las categorías.</p>
+            <a href="/catalogo" class="btn store-btn-primary mt-2">Ver todo el catálogo</a>
+        </section>
+    </div>
+</main>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

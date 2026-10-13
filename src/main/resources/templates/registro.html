@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - NextLevel</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="store-body">
+<div th:replace="~{fragments/store-header :: storeHeader}"></div>
+<main class="store-main">
+    <div class="container" th:with="redirectValue=${param.redirect != null ? param.redirect[0] : null}">
+        <div class="auth-layout">
+            <section class="auth-card">
+                <span class="store-badge mb-3">Crear cuenta NextLevel</span>
+                <h1 class="mb-2">Regístrate en NextLevel</h1>
+                <p class="section-subtitle">Crea tu usuario para guardar métodos de pago, seguir pedidos y finalizar compras. Al registrarte, el sistema genera el JWT y te deja autenticado.</p>
+
+                <a class="btn google-login-btn w-100 mb-3"
+                   th:href="${redirectValue != null ? '/auth/oauth2/google/registro?redirect=' + redirectValue : '/auth/oauth2/google/registro'}">Registrarme con Google</a>
+                <div class="auth-divider"><span>o con tus datos</span></div>
+
+                <form th:action="@{/registro}" th:object="${registroUsuarioForm}" method="post" class="row g-3">
+                    <input type="hidden" name="redirect" th:if="${redirectValue != null}" th:value="${redirectValue}">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Nombre</label>
+                        <input th:field="*{nombre}">
+                        <small class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></small>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Apellido</label>
+                        <input th:field="*{apellido}">
+                        <small class="text-danger" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></small>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Correo</label>
+                        <input type="email" th:field="*{correo}">
+                        <small class="text-danger" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></small>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Celular</label>
+                        <input th:field="*{telefono}">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Dirección</label>
+                        <input th:field="*{direccion}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Contraseña</label>
+                        <input type="password" th:field="*{password}">
+                        <small class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Confirmar contraseña</label>
+                        <input type="password" th:field="*{confirmPassword}">
+                        <small class="text-danger" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></small>
+                    </div>
+                    <div class="col-12"><button class="btn store-btn-primary w-100">Crear cuenta y entrar</button></div>
+                </form>
+                <p class="mt-4 mb-0">¿Ya tienes cuenta? <a class="quick-inline-link" th:href="${redirectValue != null ? '/login?redirect=' + redirectValue : '/login'}">Inicia sesión</a></p>
+            </section>
+            <aside class="auth-support-card">
+                <span class="badge-soft mb-3">Registro sencillo</span>
+                <h2 class="mb-3">Ventajas de crear tu cuenta</h2>
+                <ul class="simple-checklist ps-0 mb-0">
+                    <li>Guardar medios de pago.</li>
+                    <li>Ver el historial de pedidos realizados.</li>
+                    <li>Recuperar la dirección para futuras compras.</li>
+                    <li>Mantener tu información de compra organizada.</li>
+                </ul>
+            </aside>
+        </div>
+    </div>
+</main>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
